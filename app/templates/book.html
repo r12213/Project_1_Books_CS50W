@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Bibliotecario | {{ book.title }} {{book.author }}
+{% endblock %}
+
+
+{% block content %}
+{% if error %}
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{ error }}</strong>
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>
+{% endif %}
+<div class="jumbotron">
+  <div class="row">
+    <div class="col-md-6">
+      <h1>{{ book.title }}</h1>
+      <h5><strong>Author: </strong>{{ book.author }}</h5>
+      <h5><strong>Publication year: </strong>{{ book.year }}</h5>
+      <h5><strong>ISBN: </strong>{{ book.isbn }}</h5>
+    </div>
+
+    <div class="col-md-6">
+      <h3>Goodreads data:</h3>
+      <h5>Number of ratings: <strong>{{ good.n_ratings}}</strong></h5>
+      <h5>Average rating: <strong>{{ good.average_rating}}</strong></h5>
+    </div>
+  </div>
+  <br/>
+  <!-- reviews from db here -->
+  {% if reviews %}
+  <h5><strong>Reviews:</strong></h5>
+  {% for review in reviews %}
+  <div class="row">
+    <div class="col-md-9">
+      <p class="mb-1">
+        <a href="{{ url_for('main.user_reviews', username=review.username) }}">
+          @{{ review.username }}
+        </a>
+      </p>
+      <h5 class="mb-1"><i>{{ review.review }}</i></h5>
+    </div>
+    <div class="col-md-3">
+      <small class="text-muted">{{ review.date_posted }}</small>
+      <p class="text-muted">Rating: {{ review.rate }}</p>
+    </div>
+  </div>
+  <hr/>
+  {% endfor %}
+  <br/>
+  {% endif %}
+
+  <!-- form here -->
+  {% if session['user'] %}
+  <h5><strong>Add your review:</strong></h5>
+  <form action="{{ url_for('main.book_details', book_id=book.id) }}" method="post">
+    <div class="form-group">
+      <label for="select">Rate:</label>
+      <select name="rating" class="form-control" id="select">
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+      </select>
+    </div>
+    <div class="form-group">
+      <label for="text_review">Review:</label>
+      <textarea name="review" class="form-control" id="text_review" rows="8"></textarea>
+    </div>
+    <div class="form-group">
+        <button type="submit" class="btn btn-primary btn-block">Submit</button>
+    </div>
+  </form>
+  {% endif %}
+</div>
+{% endblock %}

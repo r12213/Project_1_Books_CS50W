@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Bibliotecario | Search results
+{% endblock %}
+
+{% block content %}
+<div class="jumbotron">
+  {% if books %}
+    <h1>Search results:</h1>
+      <ul>
+          {% for book in books %}
+              <li>
+                  <a href="{{ url_for('main.book_details', book_id=book.id) }}">
+                      {{ book.title }} by {{ book.author }}, {{ book.year }}
+                  </a>
+              </li>
+              <hr/>
+          {% endfor %}
+      </ul>
+
+  {% elif reviews %}
+    <strong><h2>{{ username }} reviews:</h2></strong>
+    <br>
+      <ul>
+        {% for review in reviews %}
+        <div class="row">
+          <div class="col-md-9">
+              <p class="mb-1">
+                <a href="{{ url_for('main.book_details', book_id=review.book_id) }}">
+                  {{ review.author }} - {{ review.title }}
+                </a>
+              </p>
+              <h5 class="mb-1"><i>{{ review.review }}</i></h5>
+
+            </div>
+            <div class="col-md-3">
+            <small class="text-muted">{{ review.date_posted }}</small>
+            <p class="text-muted">Rating: {{ review.rate }}</p>
+          </div>
+        </div>
+        <hr/>
+        {% endfor %}
+      </ul>
+
+  {% else %}
+    {% if message %}
+      <h1>{{ message }}</h1>
+    {% else %}
+      <h1>No results</h1>
+    {% endif %}
+  {% endif %}
+</div>
+{% endblock %}
